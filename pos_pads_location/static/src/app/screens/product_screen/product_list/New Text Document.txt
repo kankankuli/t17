@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-inherit="point_of_sale.ProductsWidget" t-inherit-mode="extension">
+        <xpath expr="//div[hasclass('products-widget')]" position="replace">
+
+
+            <div class="products-widget" >
+            <t t-set="showCategoryImages" t-value="getShowCategoryImages()" />
+            <div class="products-widget-control d-flex bg-view shadow-sm justify-content-between" t-att-class="{ 'h-12': showCategoryImages }">
+                <CategorySelector
+                    categories="getCategories()"
+                    onClick="(id) => this.pos.setSelectedCategoryId(id)"
+                    showImage="showCategoryImages"
+                />
+                <Input tModel="[pos, 'searchProductWord']"
+                    class="'p-2'"
+                    isSmall="ui.isSmall"
+                    placeholder="'Search products...'"
+                    icon="{type: 'fa', value: 'fa-search'}"
+                    debounceMillis="100" />
+            </div>
+            <div class="product-list-container flex-grow-1 overflow-y-auto" >
+                <div t-if="productsToDisplay.length != 0 and pos.posHasValidProduct()" t-attf-class="product-list {{this.pos.productListViewMode}} p-1">
+                    <t t-foreach="productsToDisplay" t-as="product" t-key="product.id">
+                        <ProductCard
+                            class="pos.productViewMode"
+                            name="product.display_name"
+                            productId="product.id"
+                            price="product.getFormattedUnitPrice()"
+                            imageUrl="product.getImageUrl()"
+                            onClick="() =>this.pos.addProductToCurrentOrder(product)"
+                            productInfo="false"
+                            onProductInfoClick="() => this.onProductInfoClick(product)"
+                        />
+                    </t>
+                </div>
+
+
+            </div>
+
+
+            </div>
+
+        </xpath>
+    </t>
+</templates>
